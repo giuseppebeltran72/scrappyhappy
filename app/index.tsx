@@ -12,7 +12,7 @@ import {
   Dimensions,
   SafeAreaView,
 } from 'react-native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -21,87 +21,79 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const { width } = Dimensions.get('window');
 
-// Define navigation param list
-type RootStackParamList = {
-  Home: undefined;
-  Scan: undefined;
-  // Add other screens as needed
-};
-
-type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-// Mock data for scrollable sections
-const collectItems = [
-  { id: '1', title: 'Paper', image: require('../assets/images/paper.png') },
-  { id: '2', title: 'Plastic', image: require('../assets/images/plastic.png') },
-  { id: '3', title: 'Metal', image: require('../assets/images/metal.png') },
-  { id: '4', title: 'E-Waste', image: require('../assets/images/ewaste.png') },
-  { id: '5', title: 'Glass', image: require('../assets/images/glass.png') },
-  { id: '6', title: 'Organic', image: require('../assets/images/organic.png') },
-];
-
-const missionItems = [
-  {
-    id: '1',
-    title: 'Reduce Waste',
-    description: 'Our goal is to reduce landfill waste by 50% by 2030',
-    image: require('../assets/images/reduce.jpg'),
-  },
-  {
-    id: '2',
-    title: 'Educate Communities',
-    description: 'Spreading awareness about proper waste management',
-    image: require('../assets/images/educate.jpg'),
-  },
-  {
-    id: '3',
-    title: 'Reward Recycling',
-    description: 'Creating incentives for sustainable practices',
-    image: require('../assets/images/reward.png'),
-  },
-];
-
-const learnItems = [
-  {
-    id: '1',
-    title: 'Recycling 101',
-    description: 'Learn the basics of recycling',
-    image: require('../assets/images/learn1.png'),
-  },
-  {
-    id: '2',
-    title: 'Composting Guide',
-    description: 'Turn waste into garden gold',
-    image: require('../assets/images/learn2.png'),
-  },
-  {
-    id: '3',
-    title: 'Zero Waste Living',
-    description: 'Tips for reducing your footprint',
-    image: require('../assets/images/learn3.png'),
-  },
-];
-
-// Feature grid items
-const featureItems = [
-  {
-    id: '1',
-    title: 'Eco-connect with companies',
-    icon: 'handshake-o',
-    type: 'FontAwesome',
-  },
-  { id: '2', title: 'Scrap Rewards', icon: 'gift', type: 'Feather' },
-  { id: '3', title: 'Leaderboard', icon: 'trophy', type: 'FontAwesome5' },
-  { id: '4', title: 'Eco Quests', icon: 'map', type: 'Feather' },
-  { id: '5', title: 'Segregation', icon: 'trash-2', type: 'Feather' },
-  { id: '6', title: 'Locate Areas', icon: 'map-pin', type: 'Feather' },
-  { id: '7', title: 'History', icon: 'history', type: 'FontAwesome5' },
-  { id: '8', title: 'Refer & Earn', icon: 'share-2', type: 'Feather' },
-];
-
-const HomePage = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
+const HomePage = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('home');
-  const userName = 'Converge'; // user state/context
+  const userName = 'Converge';
+
+  // Mock data for scrollable sections
+  const collectItems = [
+    { id: '1', title: 'Paper', image: require('../assets/images/paper.png') },
+    { id: '2', title: 'Plastic', image: require('../assets/images/plastic.png') },
+    { id: '3', title: 'Metal', image: require('../assets/images/metal.png') },
+    { id: '4', title: 'E-Waste', image: require('../assets/images/ewaste.png') },
+    { id: '5', title: 'Glass', image: require('../assets/images/glass.png') },
+    { id: '6', title: 'Organic', image: require('../assets/images/organic.png') },
+  ];
+
+  const missionItems = [
+    {
+      id: '1',
+      title: 'Reduce Waste',
+      description: 'Our goal is to reduce landfill waste by 50% by 2030',
+      image: require('../assets/images/reduce.jpg'),
+    },
+    {
+      id: '2',
+      title: 'Educate Communities',
+      description: 'Spreading awareness about proper waste management',
+      image: require('../assets/images/educate.jpg'),
+    },
+    {
+      id: '3',
+      title: 'Reward Recycling',
+      description: 'Creating incentives for sustainable practices',
+      image: require('../assets/images/reward.png'),
+    },
+  ];
+
+  const learnItems = [
+    {
+      id: '1',
+      title: 'Recycling 101',
+      description: 'Learn the basics of recycling',
+      image: require('../assets/images/learn1.png'),
+    },
+    {
+      id: '2',
+      title: 'Composting Guide',
+      description: 'Turn waste into garden gold',
+      image: require('../assets/images/learn2.png'),
+    },
+    {
+      id: '3',
+      title: 'Zero Waste Living',
+      description: 'Tips for reducing your footprint',
+      image: require('../assets/images/learn3.png'),
+    },
+  ];
+
+  // Feature grid items
+  const featureItems = [
+    {
+      id: '1',
+      title: 'Eco-connect with companies',
+      icon: 'handshake-o',
+      type: 'FontAwesome',
+    },
+    { id: '2', title: 'Scrap Rewards', icon: 'gift', type: 'Feather' },
+    { id: '3', title: 'Leaderboard', icon: 'trophy', type: 'FontAwesome5' },
+    { id: '4', title: 'Eco Quests', icon: 'map', type: 'Feather' },
+    { id: '5', title: 'Segregation', icon: 'trash-2', type: 'Feather' },
+    { id: '6', title: 'Locate Areas', icon: 'map-pin', type: 'Feather' },
+    { id: '7', title: 'History', icon: 'history', type: 'FontAwesome5' },
+    { id: '8', title: 'Refer & Earn', icon: 'share-2', type: 'Feather' },
+  ];
 
   const renderIcon = (item: { id?: string; title?: string; icon: any; type: any }) => {
     if (item.type === 'Feather') {
@@ -114,7 +106,6 @@ const HomePage = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
       return <MaterialCommunityIcons name={item.icon} size={24} color="#4CAF50" />;
     }
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -231,8 +222,8 @@ const HomePage = ({ navigation }: { navigation: HomeScreenNavigationProp }) => {
         <TouchableOpacity
           style={[styles.navButton, activeTab === "scan" && styles.activeNavButton]}
           onPress={() => {
-            setActiveTab("scan")
-            navigation.navigate("Scan")
+            setActiveTab("scan");
+            router.push("/scan");
           }}
         >
           <View style={styles.scanButton}>
