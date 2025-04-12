@@ -223,7 +223,7 @@ const HomePage = () => {
           style={[styles.navButton, activeTab === "scan" && styles.activeNavButton]}
           onPress={() => {
             setActiveTab("scan");
-            router.push("/scan");
+            router.navigate("/scan");
           }}
         >
           <View style={styles.scanButton}>

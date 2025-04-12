@@ -10,20 +10,21 @@ import {
     Alert,
 } from "react-native"
 import * as React from 'react';
-import { Camera } from 'expo-camera';
-import { Feather } from "@expo/vector-icons"
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImageManipulator from "expo-image-manipulator"
 import { StackNavigationProp } from "@react-navigation/stack"
+import Feather from "react-native-vector-icons/Feather";
 
 type ScanScreenProps = {
     navigation: StackNavigationProp<any>
 }
 
 const ScanScreen = ({ navigation }: ScanScreenProps) => {
-    const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+    const [permission, requestPermission] = useCameraPermissions();
     const [scanning, setScanning] = useState(false)
     const [scannedItem, setScannedItem] = useState<any>(null)
     const cameraRef = useRef<any>(null);
+    const [cameraFacing, setCameraFacing] = useState<CameraType>('back');
 
     // Waste categories with descriptions for the mock recognition
     const wasteCategories = [
@@ -71,19 +72,12 @@ const ScanScreen = ({ navigation }: ScanScreenProps) => {
         },
     ]
 
-    useEffect(() => {
-        // Request camera permissions
-        (async () => {
-            const { status } = await Camera.requestCameraPermissionsAsync()
-            setHasPermission(status === "granted")
-        })()
-    }, [])
-
     const takePicture = async () => {
         if (cameraRef.current) {
             setScanning(true)
             try {
-                const photo = await cameraRef.current.takePictureAsync()
+                // With the new API, we need to use a different approach to take pictures
+                const photo = await cameraRef.current.takePictureAsync();
 
                 // Resize the image to reduce processing time (in a real app)
                 const manipResult = await ImageManipulator.manipulateAsync(photo.uri, [{ resize: { width: 300 } }], {
@@ -117,7 +111,8 @@ const ScanScreen = ({ navigation }: ScanScreenProps) => {
         setScannedItem(null)
     }
 
-    if (hasPermission === null) {
+    if (!permission) {
+        // Camera permissions are still loading
         return (
             <View style={styles.container}>
                 <ActivityIndicator size="large" color="#4CAF50" />
@@ -125,12 +120,16 @@ const ScanScreen = ({ navigation }: ScanScreenProps) => {
         )
     }
 
-    if (hasPermission === false) {
+    if (!permission.granted) {
+        // Camera permissions are not granted yet
         return (
             <View style={styles.container}>
                 <Text style={styles.errorText}>No access to camera</Text>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Go Back</Text>
+                <TouchableOpacity style={styles.button} onPress={requestPermission}>
+                    <Text style={styles.buttonText}>Grant Permission</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => navigation.goBack()}>
+                    <Text style={styles.secondaryButtonText}>Go Back</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -142,7 +141,15 @@ const ScanScreen = ({ navigation }: ScanScreenProps) => {
 
             {!scannedItem ? (
                 <>
-                    <Camera ref={cameraRef} style={styles.camera} type="back">
+                    <CameraView 
+                        ref={cameraRef} 
+                        style={styles.camera} 
+                        facing={cameraFacing}
+                        onMountError={(error) => {
+                            console.error("Camera mount error:", error);
+                            Alert.alert("Camera Error", "There was an error accessing the camera.");
+                        }}
+                    >
                         <View style={styles.overlay}>
                             <View style={styles.scanFrame} />
                         </View>
@@ -168,7 +175,7 @@ const ScanScreen = ({ navigation }: ScanScreenProps) => {
                                 </TouchableOpacity>
                             )}
                         </View>
-                    </Camera>
+                    </CameraView>
                 </>
             ) : (
                 <View style={styles.resultContainer}>
